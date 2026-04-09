@@ -90,7 +90,7 @@ sqlite3 data/db.sqlite3 ".backup data/db_backup.sqlite3"
 - **数据库：** 刚刚合成的 `db_backup.sqlite3`（方案 A），**或者** `db.sqlite3*` 全套文件（方案 B）。
 - **密钥环：** `rsa_key.pem` 与 `rsa_key.pub.pem`
 - **附件目录：** `attachments` 文件夹（最重要的附件文件区）
-- *(注：`tmp``.db.sqlite3-litestream`、旧版本产生的特殊日志等临时文件纯属无用垃圾，可以直接抛弃，不要上传。)*
+- *(注：`tmp` `.db.sqlite3-litestream`、旧版本产生的特殊日志等临时文件纯属无用垃圾，可以直接抛弃，不要上传。)*
 
 ### 第三步：在容器启动前连接配置
 完成数据投递后，直接去部署你 PaaS 平台的实例。只要云端密钥和访问路径填写无误，新的容器启动时就会在终端输出：
