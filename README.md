@@ -74,7 +74,7 @@
 Vaultwarden 数据库默认开启 WAL 模式，这意味着你最新的密码数据可能分散在 `db.sqlite3`、`db.sqlite3-wal` 和 `db.sqlite3-shm` 这三个独立文件中。
 
 **方案 A：合成热备份单文件（强烈推荐 👍）**
-在存有数据的旧服务器终端执行以下命令，将日志安全无损地合并为一个没有锁的完整快照：
+在这个 data 目录下执行命令将它们安全合并为单个备份文件，将日志安全无损地合并为一个没有锁的完整快照：
 ```bash
 sqlite3 data/db.sqlite3 ".backup data/db_backup.sqlite3"
 ```
