@@ -60,14 +60,27 @@ echo "[Init] Restoring data from remote: ${REMOTE_TARGET} to /data/"
 # 从远端恢复数据，如果失败不报错，可能首次运行或者远端空
 rclone copy "${REMOTE_TARGET}" /data/ -v || echo "[Init] Warn: First run or remote is empty. Skipping restore."
 
+# 如果是全新启动且恢复到了备份快照，但主数据库文件不存在，则用快照初始化
+if [ ! -f /data/db.sqlite3 ] && [ -f /data/db_backup.sqlite3 ]; then
+    echo "[Init] Restoring db.sqlite3 from db_backup.sqlite3 snapshot..."
+    cp -a /data/db_backup.sqlite3 /data/db.sqlite3
+fi
+
 # 生成并启动后台同步脚本
 INTERVAL=${SYNC_INTERVAL:-5}
 cat > /sync.sh <<EOF
 #!/bin/bash
 while true; do
     sleep \$(( ${INTERVAL} * 60 ))
+    echo "[\$(date)] Creating SQLite hot-backup snapshot..."
+    sqlite3 /data/db.sqlite3 ".backup /data/db_backup.sqlite3"
+    
     echo "[\$(date)] Auto-syncing data from /data/ to ${REMOTE_TARGET}..."
-    rclone sync /data/ "${REMOTE_TARGET}" -v
+    rclone sync /data/ "${REMOTE_TARGET}" \\
+      --exclude "db.sqlite3" \\
+      --exclude "db.sqlite3-wal" \\
+      --exclude "db.sqlite3-shm" \\
+      -v
 done
 EOF
 chmod +x /sync.sh

@@ -1,7 +1,7 @@
 FROM vaultwarden/server:alpine
 
 # Install dependencies needed for syncing
-RUN apk add --no-cache rclone bash tzdata
+RUN apk add --no-cache rclone bash tzdata sqlite
 
 # Copy our custom entrypoint script
 COPY entrypoint.sh /entrypoint.sh
